@@ -1,0 +1,12 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\src",
+    "\\src\\Controller",
+    "\\src\\Template",
+    "\\src\\Template\\Booking",
+    "\\src\\Template\\Users"
+  ],
+  "SelectedNode": "\\src\\Template\\Users\\list.ctp",
+  "PreviewInSolutionExplorer": false
+}

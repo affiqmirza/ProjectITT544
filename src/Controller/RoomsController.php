@@ -1,0 +1,141 @@
+<?php
+namespace App\Controller;
+
+use App\Controller\AppController;
+
+/**
+ * Rooms Controller
+ *
+ * @property \App\Model\Table\RoomsTable $Rooms
+ *
+ * @method \App\Model\Entity\Room[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
+ */
+class RoomsController extends AppController
+{
+
+    /**
+     * Index method
+     *
+     * @return \Cake\Http\Response|void
+     */
+    public function index()
+    {
+        $rooms = $this->paginate($this->Rooms);
+
+        $this->set(compact('rooms'));
+    }
+
+    /**
+     * View method
+     *
+     * @param string|null $id Room id.
+     * @return \Cake\Http\Response|void
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     */
+    public function view($id = null)
+    {
+        $room = $this->Rooms->get($id, [
+            'contain' => []
+        ]);
+
+        $this->set('room', $room);
+    }
+
+    /**
+     * Add method
+     *
+     * @return \Cake\Http\Response|null Redirects on successful add, renders view otherwise.
+     */
+    public function add()
+    {
+        $room = $this->paginate($this->Rooms);
+        session_start();
+
+        $this->set('id',$_SESSION['id']);
+        //$this->set('roomsid',$_SESSION['roomsid']);
+        //$this->set('roomsname',$_SESSION['roomsname']);
+        $this->set(compact('rooms'));
+        $room = $this->Rooms->newEntity();
+        if ($this->request->is('post')) {
+            $room = $this->Rooms->patchEntity($room, $this->request->getData());
+            if ($this->Rooms->save($room)) {
+                $this->Flash->success(__('The room has been saved.'));
+
+                return $this->redirect(['action' => 'index']);
+            }
+            $this->Flash->error(__('The room could not be saved. Please, try again.'));
+        }
+        $this->set(compact('room'));
+    }
+
+    /**
+     * Edit method
+     *
+     * @param string|null $id Room id.
+     * @return \Cake\Http\Response|null Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     */
+    public function edit($id = null)
+    {
+        $room = $this->Rooms->get($id, [
+            'contain' => []
+        ]);
+        if ($this->request->is(['patch', 'post', 'put'])) {
+            $room = $this->Rooms->patchEntity($room, $this->request->getData());
+            if ($this->Rooms->save($room)) {
+                $this->Flash->success(__('The room has been saved.'));
+
+                return $this->redirect(['action' => 'index']);
+            }
+            $this->Flash->error(__('The room could not be saved. Please, try again.'));
+        }
+        $this->set(compact('room'));
+    }
+
+    /**
+     * Delete method
+     *
+     * @param string|null $id Room id.
+     * @return \Cake\Http\Response|null Redirects to index.
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     */
+    public function delete($id = null)
+    {
+        $this->request->allowMethod(['post', 'delete']);
+        $room = $this->Rooms->get($id);
+        if ($this->Rooms->delete($room)) {
+            $this->Flash->success(__('The room has been deleted.'));
+        } else {
+            $this->Flash->error(__('The room could not be deleted. Please, try again.'));
+        }
+
+        return $this->redirect(['action' => 'index']);
+    }
+
+    public function initialize()
+    {
+        parent::initialize();
+        $this->Auth->allow(['add','list']);
+    }
+
+    public function list()
+    {
+               //$users = $this->paginate($this->users);
+
+        //$this->set(compact('products'));
+
+        /*$this->paginate = [
+            //'fields' => ['users.id'],
+            'order' => [
+                'users.fname' => 'asc'
+            ]
+        ];*/
+        $rooms = $this->paginate($this->Rooms);
+        $this->set(compact('rooms'));
+
+    }
+
+    public function isAuthorized($user){
+        return true;
+    }
+}
